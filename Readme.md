@@ -1,4 +1,4 @@
-<img src="./static/images/logo.jfif" style="width:50%;display:block;margin:auto;border-radius:50%;">
+<center><img src="./static/images/logo.jfif" width="150px;"></center>
 <br/><br/>
 
 ## Todo Application REST APIs
