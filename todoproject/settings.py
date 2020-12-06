@@ -28,12 +28,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
 
     #   rest of the applications
     'authentication.apps.AuthenticationConfig',
     'poll.apps.PollConfig'
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -118,7 +125,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'todoproject/static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 
 #   media settings
 MEDIA_URL = '/media/'
