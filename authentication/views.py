@@ -1,4 +1,3 @@
-from django.http import HttpResponse, Http404
 from django.contrib.auth.models import User
 from django.db.models import Q
 
@@ -12,7 +11,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from django.contrib.auth.decorators import login_required
 
+
+#   method to register a new user into the application
 @api_view(['POST'])
 @csrf_exempt
 def signupUser(request) : 
@@ -83,3 +86,14 @@ def loginUser(request) :
         "user" : UserSerializer(user).data,
         "token" : token.key
     }, status=200)
+
+
+#   method to log the user out from the application
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def logoutUser(request) : 
+    logout(request)
+    return Response({
+        'message' : 'Succesfully logged out.'
+    })
