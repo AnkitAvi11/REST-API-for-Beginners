@@ -4,7 +4,7 @@ from django.db.models import Q
 from rest_framework.decorators import permission_classes, authentication_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserprofileSerializer
 from rest_framework.response import Response
 from .validators import isemail, isvalid_password, isvalid_username
 from django.views.decorators.csrf import csrf_exempt
@@ -83,7 +83,7 @@ def loginUser(request) :
     login(request, user)
 
     return Response({
-        "user" : UserSerializer(user).data,
+        "user" : UserprofileSerializer(user).data,
         "token" : token.key
     }, status=200)
 
@@ -97,3 +97,14 @@ def logoutUser(request) :
     return Response({
         'message' : 'Succesfully logged out.'
     })
+
+
+@api_view(['GET'])
+def getUser(request) : 
+    username = request.GET.get('username')
+
+    try : 
+        user = User.objects.get(username=username)
+        return Response(UserprofileSerializer(user).data)
+    except User.DoesNotExist : 
+        return Response({'error' : 'User does not exist'}, status=404)
