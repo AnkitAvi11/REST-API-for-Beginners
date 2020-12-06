@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     #   rest of the applications
-    'authentication.apps.AuthenticationConfig'
+    'authentication.apps.AuthenticationConfig',
+    'poll.apps.PollConfig'
 
 ]
 
