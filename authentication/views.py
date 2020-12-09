@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.views.decorators import csrf
 
 from rest_framework.decorators import permission_classes, authentication_classes, api_view
 from rest_framework.permissions import IsAuthenticated
@@ -16,18 +17,18 @@ from django.contrib.auth.decorators import login_required
 
 
 #   method to register a new user into the application
-@api_view(['POST'])
 @csrf_exempt
+@api_view(['POST'])
 def signupUser(request) : 
     if request.method == 'POST' : 
-        username = request.POST.get('username')
-        fname = request.POST.get('fname')
-        fname = fname.split(" ")
+        username = request.data.get('username')
+        fname = request.data.get('fname')
+        fname = fname.split(" ", 1)
     
         last_name = fname[1] if len(fname) > 1 else ""
         first_name = fname[0]
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.data.get('email')
+        password = request.data.get('password')
 
         if not isemail(email) : 
             return Response({
@@ -66,11 +67,12 @@ def signupUser(request) :
 
 
 #   method to login a user into the application
+@csrf_exempt
 @api_view(['POST'])
 def loginUser(request) : 
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
     user = authenticate(username=username, password=password)
 
     if user is None : 
@@ -108,3 +110,22 @@ def getUser(request) :
         return Response(UserprofileSerializer(user).data)
     except User.DoesNotExist : 
         return Response({'error' : 'User does not exist'}, status=404)
+
+
+#   to check if the token is valid or not 
+@api_view(['GET'])
+def validateUser(request) : 
+    token = request.GET.get('token')
+    if token is not None : 
+        try : 
+            token = Token.objects.get(key=token)
+            user = token.user
+            return Response(UserprofileSerializer(user).data, status=200)
+        except Token.DoesNotExist: 
+            return Response({
+                'error' : 'User does not exist'
+            }, status=404)
+    else : 
+        return Response({
+            'error' : 'Invalid token'
+        })
