@@ -173,10 +173,18 @@ def updatePassword(request) :
 
     if password1 != password2 : 
         return Response({
-            'error' : 'Invalid password entered'
+            'error' : 'Password did not match'
         }, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
     user = authenticate(username=username, password=old_password)
 
-    
+    if user is not None : 
+        user.set_password(password1)
+        return Response({
+            'message' : 'Password changed successfully'
+        }, status=200)
+
+    return Response({
+        'error' : 'Invalid password entered'
+    }, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
