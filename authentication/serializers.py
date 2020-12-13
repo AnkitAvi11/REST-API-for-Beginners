@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer) :
         ]
 
 class LoginUserSerialiser(serializers.ModelSerializer) :
-    class Meta : 
+    class Meta :
         model = Userprofile
         fields = [
             'id',

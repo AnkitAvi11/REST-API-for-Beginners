@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.views.decorators import csrf
 
 from rest_framework.decorators import permission_classes, authentication_classes, api_view
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from django.contrib.auth.decorators import login_required
 
 
 #   method to register a new user into the application
@@ -70,6 +68,7 @@ def signupUser(request) :
 @csrf_exempt
 @api_view(['POST'])
 def loginUser(request) : 
+
     username = request.data.get('username')
     password = request.data.get('password')
     
@@ -80,7 +79,7 @@ def loginUser(request) :
             'error' : 'Invalid username or password'
         }, status=status.HTTP_401_UNAUTHORIZED)
 
-    token, created = Token.objects.get_or_create(user=user)
+    token, created = Token.objects.get_or_create(user = user)
 
     login(request, user)
 
@@ -101,6 +100,7 @@ def logoutUser(request) :
     })
 
 
+#   api to get the current user information
 @api_view(['GET'])
 def getUser(request) : 
     username = request.GET.get('username')
@@ -129,3 +129,54 @@ def validateUser(request) :
         return Response({
             'error' : 'Invalid token'
         })
+
+
+#   method to update the user when authenticated
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@csrf_exempt
+def updateUser(request) : 
+    user = request.user
+    first_name = request.POST.get('fname')
+    last_name = request.POST.get('lname')
+    email = request.POST.get('email')
+
+    try : 
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+
+        user.save()
+
+        return Response(
+            UserSerializer(user).data,
+            status=200
+        )
+
+    except Exception as e : 
+        return Response({
+            'error' : str(e)
+        }, status=400)
+
+
+#   api view to change the password of a user
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@csrf_exempt
+def updatePassword(request) : 
+    username = request.user.username
+    old_password = request.POST.get('password')
+    password1 = request.POST.get('password1')
+    password2 = request.POST.get('password2')
+
+    if password1 != password2 : 
+        return Response({
+            'error' : 'Invalid password entered'
+        }, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+    user = authenticate(username=username, password=old_password)
+
+    
+
