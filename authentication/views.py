@@ -171,6 +171,11 @@ def updatePassword(request) :
     password1 = request.POST.get('password1')
     password2 = request.POST.get('password2')
 
+    if len(password1) < 7 : 
+        return Response({
+            'error' : 'Password must be atleast 8 characters long'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
     if password1 != password2 : 
         return Response({
             'error' : 'Password did not match'
@@ -180,6 +185,7 @@ def updatePassword(request) :
 
     if user is not None : 
         user.set_password(password1)
+        user.save()
         return Response({
             'message' : 'Password changed successfully'
         }, status=200)

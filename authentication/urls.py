@@ -20,6 +20,7 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
     #   profile setting
-    path('updateuser/', views.updateUser, name='update user')
+    path('updateuser/', views.updateUser, name='update user'),
+    path('change_password/', views.updatePassword, name='updatepassword'),
 
 ]

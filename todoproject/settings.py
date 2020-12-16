@@ -32,7 +32,8 @@ INSTALLED_APPS = [
 
     #   rest of the applications
     'authentication.apps.AuthenticationConfig',
-    'poll.apps.PollConfig'
+    'poll.apps.PollConfig',
+    'tasks.apps.TasksConfig'
 
 ]
 
