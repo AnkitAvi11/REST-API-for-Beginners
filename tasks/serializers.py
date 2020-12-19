@@ -9,6 +9,7 @@ class TaskSerializer(serializers.ModelSerializer) :
             'id',
             'title',
             'completion_date',
+            'description',
             'status',
             'posted_on'
         ]

@@ -2,4 +2,8 @@ from django.contrib import admin
 
 from .models import Task
 
-admin.site.register(Task)
+class TaskAdmin(admin.ModelAdmin) : 
+    list_display = ('id', 'user', 'title', 'completion_date', 'status')
+    list_display_links = ('id', 'user', 'title')
+
+admin.site.register(Task, TaskAdmin)
