@@ -19,8 +19,8 @@ from django.utils import timezone
 @authentication_classes([TokenAuthentication])
 def tasks(request) : 
     user = request.user
-
-    tasks = Task.objects.filter(user=user, completion_date = timezone.now().date(), status=False).order_by('-completion_date')
+    
+    tasks = Task.objects.filter(user=user, completion_date = datetime.now().date(), status=False).order_by('-completion_date')
 
     return Response(
         TaskSerializer(tasks, many=True).data,
@@ -60,8 +60,6 @@ def missedTasks(request) :
         status=200
     )
 
-#   for the tasks which has been missed (neither completed nor deleted)
-
 
 #   function to complete the status of the task
 @api_view(['GET'])
@@ -81,3 +79,29 @@ def completeTask(request, task_id) :
             'error' : 'Task was not not found.'
         }, status=status.HTTP_404_NOT_FOUND)
 
+
+
+#   function to add tasks
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+def addtask(request) : 
+    user = request.user
+    title = request.POST.get('title')
+    description = request.POST.get('description')
+    date_ = request.POST.get('date')
+
+    try : 
+        Task.objects.create(
+            user = user,
+            title = title,
+            completion_date = date_,
+            description = description
+        )
+        return Response({
+            'message' : 'task added successfully '
+        },status=200)
+    except : 
+        return Response({
+            'error' : 'Unexpected error occurred'
+        }, status=status.HTTP_400_BAD_REQUEST)
