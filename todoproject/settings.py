@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     #   rest of the applications
     'authentication.apps.AuthenticationConfig',
     'poll.apps.PollConfig',
-    'tasks.apps.TasksConfig'
+    'tasks.apps.TasksConfig',
+    'rest_framework_swagger'
 
 ]
 
@@ -41,8 +42,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication'
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,9 +130,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'todoproject/static')
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'todoproject/static')
 ]
 
 #   media settings

@@ -20,3 +20,8 @@ class Task(models.Model) :
     #   str function for the class
     def __str__(self) : 
         return self.title
+
+
+    #   repr
+    def __repr__(self) -> str:
+        return super().__repr__()
